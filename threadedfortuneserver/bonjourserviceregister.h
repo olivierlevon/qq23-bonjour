@@ -44,7 +44,7 @@ class BonjourServiceRegister : public QObject
 {
     Q_OBJECT
 public:
-    BonjourServiceRegister(QObject *parent = 0);
+    BonjourServiceRegister(QObject *parent = nullptr);
     ~BonjourServiceRegister();
 
     void registerService(const BonjourRecord &record, quint16 servicePort);

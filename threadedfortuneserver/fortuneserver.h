@@ -33,10 +33,10 @@ class FortuneServer : public QTcpServer
     Q_OBJECT
 
 public:
-    FortuneServer(QObject *parent = 0);
+    FortuneServer(QObject *parent = nullptr);
 
 protected:
-    void incomingConnection(int socketDescriptor);
+    void incomingConnection(qintptr socketDescriptor) override;
 
 private:
     QStringList fortunes;

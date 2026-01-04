@@ -21,10 +21,9 @@
 **
 ****************************************************************************/
 
-#include <QtGui>
+#include <QtWidgets>
 #include <QtNetwork>
-
-#include <stdlib.h>
+#include <QRandomGenerator>
 
 #include "server.h"
 #include "bonjourserviceregister.h"
@@ -57,8 +56,8 @@ Server::Server(QWidget *parent)
              << tr("You cannot kill time without injuring eternity.")
              << tr("Computers are not intelligent. They only think they are.");
 
-    connect(quitButton, SIGNAL(clicked()), this, SLOT(close()));
-    connect(tcpServer, SIGNAL(newConnection()), this, SLOT(sendFortune()));
+    connect(quitButton, &QPushButton::clicked, this, &Server::close);
+    connect(tcpServer, &QTcpServer::newConnection, this, &Server::sendFortune);
 
     QHBoxLayout *buttonLayout = new QHBoxLayout;
     buttonLayout->addStretch(1);
@@ -81,15 +80,15 @@ void Server::sendFortune()
 {
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
-    out.setVersion(QDataStream::Qt_4_0);
+    out.setVersion(QDataStream::Qt_6_0);
     out << (quint16)0;
-    out << fortunes.at(qrand() % fortunes.size());
+    out << fortunes.at(QRandomGenerator::global()->bounded(fortunes.size()));
     out.device()->seek(0);
     out << (quint16)(block.size() - sizeof(quint16));
 
     QTcpSocket *clientConnection = tcpServer->nextPendingConnection();
-    connect(clientConnection, SIGNAL(disconnected()),
-            clientConnection, SLOT(deleteLater()));
+    connect(clientConnection, &QTcpSocket::disconnected,
+            clientConnection, &QTcpSocket::deleteLater);
 
     clientConnection->write(block);
     clientConnection->disconnectFromHost();

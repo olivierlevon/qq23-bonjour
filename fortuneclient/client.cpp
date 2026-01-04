@@ -21,7 +21,7 @@
 **
 ****************************************************************************/
 
-#include <QtGui>
+#include <QtWidgets>
 #include <QtNetwork>
 
 #include "client.h"
@@ -38,8 +38,8 @@ Client::Client(QWidget *parent)
 
     treeWidget = new QTreeWidget(this);
     treeWidget->setHeaderLabels(QStringList() << tr("Available Fortune Servers"));
-    connect(bonjourBrowser, SIGNAL(currentBonjourRecordsChanged(const QList<BonjourRecord> &)),
-            this, SLOT(updateRecords(const QList<BonjourRecord> &)));
+    connect(bonjourBrowser, &BonjourServiceBrowser::currentBonjourRecordsChanged,
+            this, &Client::updateRecords);
     getFortuneButton = new QPushButton(tr("Get Fortune"));
     getFortuneButton->setDefault(true);
     getFortuneButton->setEnabled(false);
@@ -52,12 +52,12 @@ Client::Client(QWidget *parent)
 
     tcpSocket = new QTcpSocket(this);
 
-    connect(getFortuneButton, SIGNAL(clicked()),
-            this, SLOT(requestNewFortune()));
-    connect(quitButton, SIGNAL(clicked()), this, SLOT(close()));
-    connect(tcpSocket, SIGNAL(readyRead()), this, SLOT(readFortune()));
-    connect(tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)),
-            this, SLOT(displayError(QAbstractSocket::SocketError)));
+    connect(getFortuneButton, &QPushButton::clicked,
+            this, &Client::requestNewFortune);
+    connect(quitButton, &QPushButton::clicked, this, &Client::close);
+    connect(tcpSocket, &QTcpSocket::readyRead, this, &Client::readFortune);
+    connect(tcpSocket, &QAbstractSocket::errorOccurred,
+            this, &Client::displayError);
 
     QGridLayout *mainLayout = new QGridLayout;
     mainLayout->addWidget(treeWidget, 0, 0, 2, 2);
@@ -81,8 +81,8 @@ void Client::requestNewFortune()
 
     if (!bonjourResolver) {
         bonjourResolver = new BonjourServiceResolver(this);
-        connect(bonjourResolver, SIGNAL(bonjourRecordResolved(const QHostInfo &, int)),
-                this, SLOT(connectToServer(const QHostInfo &, int)));
+        connect(bonjourResolver, &BonjourServiceResolver::bonjourRecordResolved,
+                this, &Client::connectToServer);
     }
     QTreeWidgetItem *item = selectedItems.at(0);
     QVariant variant = item->data(0, Qt::UserRole);
@@ -99,7 +99,7 @@ void Client::connectToServer(const QHostInfo &hostInfo, int port)
 void Client::readFortune()
 {
     QDataStream in(tcpSocket);
-    in.setVersion(QDataStream::Qt_4_0);
+    in.setVersion(QDataStream::Qt_6_0);
 
     if (blockSize == 0) {
         if (tcpSocket->bytesAvailable() < (int)sizeof(quint16))

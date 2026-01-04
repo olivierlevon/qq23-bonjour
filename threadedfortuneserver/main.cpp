@@ -21,10 +21,7 @@
 **
 ****************************************************************************/
 
-#include <QtGui/QApplication>
-#include <QtCore/QDateTime>
-
-#include <stdlib.h>
+#include <QApplication>
 
 #include "dialog.h"
 
@@ -33,6 +30,5 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
     Dialog dialog;
     dialog.show();
-    qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
     return dialog.exec();
 }

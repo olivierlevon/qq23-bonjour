@@ -21,13 +21,11 @@
 **
 ****************************************************************************/
 
-#include <QtGui/QLabel>
-#include <QtGui/QPushButton>
-#include <QtGui/QMessageBox>
-#include <QtGui/QLayout>
-#include <QtNetwork/QHostInfo>
-
-#include <stdlib.h>
+#include <QLabel>
+#include <QPushButton>
+#include <QMessageBox>
+#include <QLayout>
+#include <QHostInfo>
 
 #include "dialog.h"
 #include "bonjourserviceregister.h"
@@ -52,7 +50,7 @@ Dialog::Dialog(QWidget *parent)
                             "Run the Fortune Client example now.")
                          .arg(server.serverPort()));
 
-    connect(quitButton, SIGNAL(clicked()), this, SLOT(close()));
+    connect(quitButton, &QPushButton::clicked, this, &Dialog::close);
 
     QHBoxLayout *buttonLayout = new QHBoxLayout;
     buttonLayout->addStretch(1);

@@ -36,7 +36,7 @@ class Server : public QDialog
     Q_OBJECT
 
 public:
-    Server(QWidget *parent = 0);
+    Server(QWidget *parent = nullptr);
 
 private slots:
     void sendFortune();
