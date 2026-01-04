@@ -77,6 +77,74 @@ qmake
 make
 ```
 
+## Deployment
+
+### Quick testing (Windows)
+
+For quick local testing during development, add the required DLLs to your PATH:
+
+```cmd
+# Add Qt and mDNSResponder DLLs to PATH temporarily
+set PATH=%PATH%;C:\Qt\6.x.x\msvc2022_64\bin
+set PATH=%PATH%;C:\path\to\mDNSResponder\mDNSWindows\DLL\x64\Debug
+
+# Run directly from build directory
+fortuneclient.exe
+```
+
+This avoids copying files during development iterations.
+
+### Windows (full deployment)
+
+To deploy the application (including debug builds for testing):
+
+1. **Copy the executable** to a deployment folder:
+   ```cmd
+   mkdir deploy
+   copy release\fortuneclient.exe deploy\
+   ```
+
+2. **Run windeployqt** to gather Qt dependencies:
+   ```cmd
+   windeployqt deploy\fortuneclient.exe
+   # For debug builds:
+   windeployqt --debug deploy\fortuneclient.exe
+   ```
+
+3. **Copy dnssd.dll** from your mDNSResponder build:
+   ```cmd
+   # For x64:
+   copy "C:\path\to\mDNSResponder\mDNSWindows\DLL\x64\Debug\dnssd.dll" deploy\
+   # For ARM64:
+   copy "C:\path\to\mDNSResponder\mDNSWindows\DLL\ARM64\Debug\dnssd.dll" deploy\
+   ```
+
+4. **Ensure Bonjour Service is running** on target machine:
+   - Install [Bonjour Print Services](https://support.apple.com/kb/DL999) or iTunes, OR
+   - Install and run `mDNSResponder.exe` as a service from your build
+
+   To check if the service is running:
+   ```cmd
+   sc query "Bonjour Service"
+   ```
+
+### macOS
+
+```bash
+macdeployqt fortuneclient.app
+# Bonjour is built-in, no additional steps needed
+```
+
+### Linux
+
+```bash
+# Install runtime dependency
+sudo apt install libavahi-compat-libdnssd1
+
+# For AppImage or similar, use linuxdeployqt
+linuxdeployqt fortuneclient -appimage
+```
+
 ## Usage
 
 1. Start one of the fortune servers
