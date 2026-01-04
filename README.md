@@ -22,34 +22,57 @@ This project provides reusable Qt classes for integrating Bonjour/Zeroconf servi
 
 - Qt 6.x (QtCore, QtWidgets, QtNetwork)
 - Apple Bonjour SDK or compatible mDNS implementation:
-  - **Windows**: [Bonjour SDK for Windows](https://developer.apple.com/bonjour/)
+  - **Windows**: [Bonjour SDK for Windows](https://developer.apple.com/bonjour/) or mDNSResponder build
   - **Linux**: Avahi with libdns_sd compatibility layer (`libavahi-compat-libdnssd-dev`)
   - **macOS**: Built-in (no additional installation needed)
 
+## Supported Architectures
+
+| Platform | x86_64 | ARM64 |
+|----------|--------|-------|
+| Windows | Yes | Yes |
+| Linux | Yes | Yes |
+| macOS | Yes | Yes (Apple Silicon) |
+
+The `.pro` files automatically detect the target architecture and select the appropriate library paths.
+
 ## Building
 
-### Configure Bonjour SDK paths (Windows only)
+### Configure mDNSResponder paths (Windows only)
 
-Edit the `.pro` files and uncomment/set the SDK paths:
+The `.pro` files use `QT_ARCH` to automatically select the correct library path for x64 or ARM64 builds.
+
+Edit the `.pro` files and set the paths for your mDNSResponder build:
 
 ```qmake
 win32 {
     LIBS += -ldnssd
-    LIBPATH += "C:/Program Files/Bonjour SDK/Lib/x64"
-    INCLUDEPATH += "C:/Program Files/Bonjour SDK/Include"
+    INCLUDEPATH += "/path/to/mDNSResponder/mDNSShared"
+
+    contains(QT_ARCH, x86_64) {
+        LIBPATH += "/path/to/mDNSResponder/mDNSWindows/DLL/x64/Debug"
+    }
+    contains(QT_ARCH, arm64) {
+        LIBPATH += "/path/to/mDNSResponder/mDNSWindows/DLL/ARM64/Debug"
+    }
 }
 ```
 
-### Build with qmake
+> **Note**: The official Bonjour SDK for Windows does not include ARM64 libraries. For ARM64 support, you must build [mDNSResponder](https://github.com/apple-oss-distributions/mDNSResponder) from source.
+
+### Build with Qt Creator
+
+Open `qq23-bonjour.pro` in Qt Creator to load all three projects at once.
+
+### Build with qmake (command line)
 
 ```bash
-# Build the client
-cd fortuneclient
-qmake
+# Build all projects
+qmake qq23-bonjour.pro
 make    # or nmake/mingw32-make on Windows
 
-# Build a server
-cd ../fortuneserver
+# Or build individually
+cd fortuneclient
 qmake
 make
 ```
