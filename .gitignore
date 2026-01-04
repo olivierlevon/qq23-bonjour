@@ -1,0 +1,73 @@
+# Compiled Object files
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Compiled Static libraries
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# Qt generated files
+moc_*.cpp
+moc_*.h
+qrc_*.cpp
+ui_*.h
+*.moc
+Makefile
+Makefile.*
+
+# Qt Creator
+*.pro.user
+*.pro.user.*
+*.qbs.user
+*.qbs.user.*
+*.moc
+*.qmlc
+*.jsc
+
+# Build directories
+build/
+debug/
+release/
+build-*/
+
+# Qt Creator auto-generated files
+*.autosave
+
+# QtCtreator CMake
+CMakeLists.txt.user*
+
+# Visual Studio
+*.vcxproj
+*.vcxproj.*
+*.sln
+*.suo
+*.user
+*.ncb
+*.sdf
+*.opensdf
+*.VC.db
+*.VC.opendb
+.vs/
+x64/
+x86/
+Win32/
+Debug/
+Release/
+
+# macOS
+.DS_Store
+*.dSYM/
